@@ -66,3 +66,8 @@ Available or Not Applicable).Users can select any number of checkboxes,
 which allows for the inclusion of multiple study types in the query
 simultaneously.The selection made by the user through these checkboxes
 is used to filter the dataset for the types of studies selected.
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/kaneplusplus/bis620.2023/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kaneplusplus/bis620.2023/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
