@@ -14,5 +14,6 @@ jobs:
         install.packages("covr")
         install.packages("remotes")
         remotes::install_deps(dependencies = TRUE)
+      shell: Rscript {0}
     - name: Run test coverage
       run: covr::codecov()
