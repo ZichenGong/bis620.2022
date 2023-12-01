@@ -1,5 +1,6 @@
-
-
+library(testthat)
+library(dplyr)
+library(bis620.2023)
 # Sample data to use for testing
 test_data <- tibble(
   time = as.POSIXct(c("2023-01-01 00:00:00", "2023-01-02 00:00:00", "2023-01-03 00:00:00"), tz = "UTC"),

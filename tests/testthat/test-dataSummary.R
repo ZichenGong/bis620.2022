@@ -1,4 +1,6 @@
-
+library(testthat)
+library(dplyr)
+library(bis620.2023)
 test_that("summarizeData calculates summary statistics correctly", {
   # Create a temporary data frame
   temp_data <- data.frame(
