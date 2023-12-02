@@ -71,3 +71,6 @@ is used to filter the dataset for the types of studies selected.
 
 [![R-CMD-check-coverage](https://github.com/ZichenGong/bis620.2022/actions/workflows/R-CMD-check-coverage.yml/badge.svg)](https://github.com/ZichenGong/bis620.2022/actions/workflows/R-CMD-check-coverage.yml)
 <!-- badges: end -->
+
+Link to coverage page:
+<https://app.codecov.io/gh/ZichenGong/bis620.2022/tree/main/R>
