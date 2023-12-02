@@ -1,0 +1,20 @@
+name: R-CMD-check-coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    container: rocker/r-ver:latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        Rscript -e 'install.packages("remotes")'
+        Rscript -e 'remotes::install_deps(dependencies = TRUE)'
+        Rscript -e 'install.packages("covr")'
+    - name: Test coverage
+      run: |
+        Rscript -e 'covr::codecov()'
