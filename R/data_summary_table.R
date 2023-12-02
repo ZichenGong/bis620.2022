@@ -12,3 +12,4 @@ summarizeData <- function(data) {
 return(summary_table)
 }
 
+

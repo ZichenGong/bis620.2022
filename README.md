@@ -69,5 +69,5 @@ is used to filter the dataset for the types of studies selected.
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/kaneplusplus/bis620.2023/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kaneplusplus/bis620.2023/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check-coverage](https://github.com/ZichenGong/bis620.2022/actions/workflows/R-CMD-check-coverage.yml/badge.svg)](https://github.com/ZichenGong/bis620.2022/actions/workflows/R-CMD-check-coverage.yml)
 <!-- badges: end -->
