@@ -1,0 +1,177 @@
+---
+title: "Final Project"
+output: html_document
+date: "2023-12-17"
+---
+For more detailed report, please follow the link to see the complete abstract. [https://docs.google.com/document/d/1sm57L_k4g6a9OZ5qYjTjwThpYfCUf6fh_lsfIz1AdBs/edit?usp=sharing]
+
+# Import Dataset
+```{r}
+#import dataset
+library(haven)
+library(purrr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+trial_path = file.path("PDS_DSA_20050203")
+trial_files = list.files(trial_path, pattern = "*_pds2019.sas7bdat")
+dl = map(file.path(trial_path, trial_files), ~ read_sas(.x))
+names(dl) = gsub("*_pds2019.sas7bdat", "", trial_files)
+```
+# Get merged table and get the target variables into a new table
+```{r}
+adrsp = dl$adrsp
+adrsp_trt = left_join(adrsp, dl$adsl, by = "SUBJID")
+adrsp_trt$arm = adrsp_trt$ATRT
+
+#get the target columns
+selected_data <- adrsp_trt|>
+  select(SUBJID, DTH, SEX, DIAGTYPE,B_WEIGHT,arm)|>
+  distinct()
+```
+
+#Get Data Summary Table using function in our package
+```{r}
+library(bis620.2023)
+summarizeData(selected_data)
+```
+
+# Data Exploration
+```{r}
+#SEX
+demo <- selected_data
+demo_counts= demo |>
+  group_by(DTH, SEX)|>
+  summarize(count = n(), .groups = "drop")
+
+ggplot(demo_counts, aes(x = DTH, y = count)) +
+  geom_col() + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(~ SEX)
+
+```
+
+```{r}
+#DIAGTYPE
+demo <- selected_data
+demo_counts= demo |>
+  group_by(DTH, DIAGTYPE)|>
+  summarize(count = n(), .groups = "drop")
+
+ggplot(demo_counts, aes(x = DTH, y = count)) +
+  geom_col() + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(~ DIAGTYPE)
+```
+```{r}
+#B_WEIGHT
+boxplot(selected_data$B_WEIGHT, main = "boxplot of Baseline Weight")
+```
+
+```{r}
+#arm
+demo <- selected_data
+demo_counts= demo |>
+  group_by(DTH, arm)|>
+  summarize(count = n(), .groups = "drop")
+
+ggplot(demo_counts, aes(x = DTH, y = count)) +
+  geom_col() + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(~ arm)
+
+```
+
+
+# Filter the table using a function in our package
+```{r}
+#filter_by_sex
+library(bis620.2023)
+#male
+male_data <- filterTrialsByCategory_of_X(selected_data, "SEX", "Male")
+#female
+female_data <- filterTrialsByCategory_of_X(selected_data, "SEX", "Female")
+```
+
+# Divide the data based on the B-WEIGHT into two groups -- < mean & > mean using a function in our package
+```{r}
+#male
+m_dividing_criteria <- mean(male_data$B_WEIGHT)
+#Below the average group
+male_below_average <- filter_by_specifiedvalue(male_data, "B_WEIGHT", m_dividing_criteria)
+#Above the average group
+male_over_average <- anti_join(male_data, male_below_average, by = "SUBJID")
+
+#female
+f_dividing_criteria <- mean(female_data$B_WEIGHT)
+#Below the average group
+female_below_average <- filter_by_specifiedvalue(female_data, "B_WEIGHT", f_dividing_criteria)
+#Above the average group
+female_over_average <- anti_join(female_data, female_below_average, by = "SUBJID")
+
+```
+
+# Model Development
+1. male_below_average Group
+```{r}
+#male_below_average Group
+library(dplyr)
+library(stats)
+
+df <- male_below_average %>%
+  mutate(DIAGTYPE = as.factor(DIAGTYPE),
+         arm = as.factor(arm))
+#Since the sex is fixed, Fit the logistic regression model without the SEX variable
+model1 <- glm(DTH ~ DIAGTYPE + B_WEIGHT + arm, family = binomial(link = "logit"), data = df)
+
+summary(model1)
+```
+2. male_over_average Group
+```{r}
+#male_over_average Group
+library(dplyr)
+library(stats)
+
+df <- male_over_average %>%
+  mutate(DIAGTYPE = as.factor(DIAGTYPE),
+         arm = as.factor(arm))
+#Since the sex is fixed, Fit the logistic regression model without the SEX variable
+model2 <- glm(DTH ~ DIAGTYPE + B_WEIGHT + arm, family = binomial(link = "logit"), data = df)
+
+summary(model2)
+```
+
+3. female_below_average Group
+```{r}
+#male_over_average Group
+library(dplyr)
+library(stats)
+
+df <- female_below_average %>%
+  mutate(DIAGTYPE = as.factor(DIAGTYPE),
+         arm = as.factor(arm))
+#Since the sex is fixed, Fit the logistic regression model without the SEX variable
+model3 <- glm(DTH ~ DIAGTYPE + B_WEIGHT + arm, family = binomial(link = "logit"), data = df)
+
+summary(model3)
+```
+4. female_over_average Group
+```{r}
+#male_over_average Group
+library(dplyr)
+library(stats)
+
+df <- female_over_average %>%
+  mutate(DIAGTYPE = as.factor(DIAGTYPE),
+         arm = as.factor(arm))
+#Since the sex is fixed, Fit the logistic regression model without the SEX variable
+model4 <- glm(DTH ~ DIAGTYPE + B_WEIGHT + arm, family = binomial(link = "logit"), data = df)
+
+summary(model4)
+```
+
+
+

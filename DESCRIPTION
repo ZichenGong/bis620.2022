@@ -16,7 +16,9 @@ Imports:
   ggplot2,
   purrr,
   tidyr,
-  plotly
+  plotly,
+  shiny,
+  rlang
 Suggests: 
     knitr,
     rmarkdown,

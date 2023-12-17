@@ -3,37 +3,20 @@ library(testthat)
 library(dplyr)
 library(bis620.2023)
 
-# Sample data to use for testing
-test_data <- tibble(
-  X = c(-2, 0, 1, 2)
-)
+test_that("filterTrialsByCategory_of_X filters correctly", {
+  # Create a sample dataset
+  sample_data <- tibble::tibble(
+    SEX = c("Male", "Female", "Male", "Female"),
+    AGE = c(30, 25, 40, 35),
+    WEIGHT = c(70, 55, 80, 65)
+  )
 
-# Test that the function filters by the category "X < -1"
-test_that("filterTrialsByCategory_of_X filters by 'X < -1' correctly", {
-  expected <- test_data %>%
-    filter(X < -1)
+  # Test the function
+  result <- filterTrialsByCategory_of_X(sample_data, "SEX", "Male")
 
-  result <- filterTrialsByCategory_of_X(test_data, "X < -1")[1]
-
-  expect_equal(result, expected)
+  # Check if the result is as expected
+  expect_equal(nrow(result), 2) # Expect 2 rows where SEX is "Male"
+  expect_true(all(result$SEX == "Male")) # All SEX values should be "Male"
 })
 
-# Test that the function filters by the category "-1 <= X <= 1"
-test_that("filterTrialsByCategory_of_X filters by '-1 <= X <= 1' correctly", {
-  expected <- test_data %>%
-    filter(X >= -1 & X <= 1)
 
-  result <- filterTrialsByCategory_of_X(test_data, "-1 <= X <= 1")[1]
-
-  expect_equal(result, expected)
-})
-
-# Test that the function filters by the category "X > 1"
-test_that("filterTrialsByCategory_of_X filters by 'X > 1' correctly", {
-  expected <- test_data %>%
-    filter(X > 1)
-
-  result <- filterTrialsByCategory_of_X(test_data, "X > 1")[1]
-
-  expect_equal(result, expected)
-})
