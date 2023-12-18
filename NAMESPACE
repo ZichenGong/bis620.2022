@@ -3,7 +3,7 @@
 export(downloadCSV)
 export(filterTrialsByCategory_of_X)
 export(filterTrialsByDate)
-export(filterTrialsBySpecified_value)
+export(filter_by_specifiedvalue)
 export(hello)
 export(launchMyApp)
 export(plot_accel)
